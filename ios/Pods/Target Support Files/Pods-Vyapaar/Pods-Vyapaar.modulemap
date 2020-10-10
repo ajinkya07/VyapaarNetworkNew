@@ -1,0 +1,6 @@
+module Pods_Vyapaar {
+  umbrella header "Pods-Vyapaar-umbrella.h"
+
+  export *
+  module * { export * }
+}

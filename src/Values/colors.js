@@ -1,0 +1,17 @@
+export const color = {
+    brandColor: '#153191',
+    primaryGray: "#E6E6E6",
+    secondaryGray: "#E3E3E3",
+    tertiaryGray: "#404040",
+    white: "#FFFFFF",
+    inputboxBorder: "#3d3d3d",
+    black: '#000',
+    lightGray: "#969595",
+    extraLightGray: '#FBFBFB',
+    darkBlue: "#103557",
+    borderGray: "#bfbdbd",
+    textNote: "#999999",
+    hyperlinkColor: 'blue',
+    golden: '#fbcb84',
+    green: '#19af81',
+}
