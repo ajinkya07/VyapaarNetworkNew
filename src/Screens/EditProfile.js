@@ -1,19 +1,28 @@
 import React, { Component } from 'react';
 import {
     View, Text, StyleSheet, SafeAreaView,
-    Image, Platform, ScrollView, TouchableOpacity
+    Image, Platform, ScrollView, TouchableOpacity, Alert
 } from 'react-native';
 import _CustomHeader from '@customHeader/_CustomHeader'
 import _CustomFooter from '@customFooter/_CustomFooter'
 import { color } from '@values/colors';
 import { strings } from '@values/strings'
-import { Container, Header, Content, Button, Icon, Form, Textarea, Item, Input, Label } from 'native-base';
+import {
+    Container, Header, Content, ActionSheet,
+    Button, Icon, Form, Textarea, Item, Input, Label
+} from 'native-base';
 
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import DropDownPicker from 'react-native-dropdown-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+
+var BUTTONS = ['Take Photo', 'Choose from Library', 'Cancel'];
+var DESTRUCTIVE_INDEX = 2;
+var CANCEL_INDEX = 2;
+
 
 
 export default class DefaultScreen extends Component {
@@ -37,7 +46,10 @@ export default class DefaultScreen extends Component {
             factoryArea: '', factoryCity: '',
             factoryRoad: '', factoryPincode: '',
             manufacture: '',
-            iceCode: '', gstNumber: ''
+            iceCode: '', gstNumber: '',
+            profileUrl: '', imageData: '',
+            isEditTrue: false
+
 
         };
     }
@@ -73,6 +85,85 @@ export default class DefaultScreen extends Component {
     closeStateFactory = () => { this.setState({ isVisibleStateFactory: false }) }
 
 
+    // image selection
+
+    showActionSheet = (from) => {
+        return ActionSheet.show(
+            {
+                options: BUTTONS,
+                cancelButtonIndex: CANCEL_INDEX,
+                destructiveButtonIndex: DESTRUCTIVE_INDEX,
+            },
+            buttonIndex => {
+                switch (buttonIndex) {
+                    case 0: {
+                        this.openCamera(from);
+                        break;
+                    }
+                    case 1: {
+                        this.openImagePicker(from);
+                        break;
+                    }
+                }
+            },
+        );
+    };
+
+
+    openCamera = (from) => {
+        ImagePicker.openCamera({
+            width: wp(95),
+            height: hp(35),
+            cropping: true,
+            includeBase64: true,
+        }).then(image => {
+            if (from === 'fromProfile') {
+                this.setState({ profileUrl: image.path, profileData: image });
+            }
+            if (from === 'fromGST') {
+                this.setState({ gstUrl: image.path, gstData: image });
+            }
+            if (from === 'fromPAN') {
+                this.setState({ panUrl: image.path, panData: image });
+            }
+        });
+    };
+
+
+    openImagePicker = (from) => {
+        ImagePicker.openPicker({
+            width: wp(95),
+            height: hp(35),
+            includeBase64: true,
+            cropping: true,
+        }).then(image => {
+            if (from === 'fromProfile') {
+                this.setState({ profileUrl: image.path, profileData: image });
+            }
+            if (from === 'fromGST') {
+                this.setState({ gstUrl: image.path, gstData: image });
+            }
+            if (from === 'fromPAN') {
+                this.setState({ panUrl: image.path, panData: image });
+            }
+        });
+    };
+
+    clearImage = (from) => {
+        if (from == 'fromProfile') {
+            this.setState({ profileUrl: '', profileData: '' })
+        }
+        if (from === 'fromGST') {
+            this.setState({ gstUrl: '', gstData: '' });
+        }
+        if (from === 'fromPAN') {
+            this.setState({ panUrl: '', panData: '' });
+        }
+    }
+
+    setButton = () => { this.setState({ isEditTrue: true }) }
+
+    setBackButton = () => { this.setState({ isEditTrue: false }) }
 
     render() {
 
@@ -81,14 +172,14 @@ export default class DefaultScreen extends Component {
             officePincode, officeCity, officeArea, officeRoad, officeAddress,
             stateFactory, countryFactory, isVisibleStateFactory, isVisibleCountryFactory,
             factoryAddress, factoryPincode, factoryCity, factoryRoad, factoryArea,
-            iceCode, gstNumber, manufacture
-
+            iceCode, gstNumber, manufacture,
+            profileUrl, panUrl, gstUrl, isEditTrue
         } = this.state
 
         return (
             <Container style={styles.container}>
                 <_CustomHeader
-                    Title={strings.editProfile}
+                    Title={isEditTrue ? strings.editProfile : strings.viewProfile}
                     SubTitle={strings.profileSubtitle}
                     LeftBtnPress={() => this.props.navigation.goBack()}
                     backgroundColor={color.brandColor}
@@ -111,27 +202,30 @@ export default class DefaultScreen extends Component {
                         </Item>
                         <View style={styles.profile}>
                             <Image
-                                resizeMode={'contain'}
+                                resizeMode={'cover'}
                                 style={styles.profileImage}
-                                source={require('../../assets/logo.png')}
+                                defaultSource={require('../../assets/logo.png')}
+                                source={{ uri: this.state.profileUrl }}
+
                             />
                         </View>
-                        <View style={{ marginLeft: 10, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <TouchableOpacity>
-                                <Image
-                                    resizeMode={'contain'}
-                                    style={styles.addRemove}
-                                    source={require('../../assets/attach.png')}
-                                />
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Image
-                                    resizeMode={'contain'}
-                                    style={[styles.addRemove, { marginTop: 5 }]}
-                                    source={require('../../assets/delete.png')}
-                                />
-                            </TouchableOpacity>
-                        </View>
+                        {isEditTrue &&
+                            <View style={{ marginLeft: 10, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <TouchableOpacity onPress={() => this.showActionSheet('fromProfile')}>
+                                    <Image
+                                        resizeMode={'contain'}
+                                        style={styles.addRemove}
+                                        source={require('../../assets/attach.png')}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.clearImage('fromProfile')}>
+                                    <Image
+                                        resizeMode={'contain'}
+                                        style={[styles.addRemove, { marginTop: 5 }]}
+                                        source={require('../../assets/delete.png')}
+                                    />
+                                </TouchableOpacity>
+                            </View>}
                     </View>
 
                     <Form>
@@ -447,7 +541,7 @@ export default class DefaultScreen extends Component {
                                 //isVisible={isVisibleStateFactory}
                                 // onOpen={() => this.changeVisibilityFactory({ isVisibleStateFactory: true })}
                                 //onClose={() => this.closeStateFactory()}
-                                placeholder="State"
+                                placeholder="Manufacturer"
                                 placeholderStyle={{ left: -11 }}
                                 defaultValue={manufacture}
                                 containerStyle={{ height: 40, width: wp(45), }}
@@ -455,7 +549,7 @@ export default class DefaultScreen extends Component {
                                 itemStyle={{ justifyContent: 'flex-start' }}
                                 labelStyle={{ fontSize: 17, color: color.brandColor }}
                                 dropDownStyle={{ backgroundColor: color.white, }}
-                                onChangeItem={(item) => this.setStateValue('manufacture', item.value)}
+                                onChangeItem={(item) => this.setStateValue('manufacturer', item.value)}
                                 searchable={true}
                                 searchablePlaceholder="Search Manufacture"
                                 searchablePlaceholderTextColor="gray"
@@ -496,25 +590,28 @@ export default class DefaultScreen extends Component {
                                     <Image
                                         resizeMode={'contain'}
                                         style={styles.documentImage}
-                                        source={require('../../assets/logo.png')}
+                                        defaultSource={require('../../assets/logo.png')}
+                                        source={{ uri: this.state.gstUrl }}
                                     />
                                 </View>
-                                <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                                    <TouchableOpacity>
-                                        <Image
-                                            resizeMode={'contain'}
-                                            style={styles.addRemove}
-                                            source={require('../../assets/attach.png')}
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <Image
-                                            resizeMode={'contain'}
-                                            style={[styles.addRemove, { marginLeft: 10 }]}
-                                            source={require('../../assets/delete.png')}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
+                                {isEditTrue &&
+                                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                                        <TouchableOpacity onPress={() => this.showActionSheet('fromGST')}>
+                                            <Image
+                                                resizeMode={'contain'}
+                                                style={styles.addRemove}
+                                                source={require('../../assets/attach.png')}
+                                            />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => this.clearImage('fromGST')}>
+                                            <Image
+                                                resizeMode={'contain'}
+                                                style={[styles.addRemove, { marginLeft: 10 }]}
+                                                source={require('../../assets/delete.png')}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                }
                             </View>
 
                             <View style={styles.documentView}>
@@ -523,32 +620,38 @@ export default class DefaultScreen extends Component {
                                     <Image
                                         resizeMode={'contain'}
                                         style={styles.documentImage}
-                                        source={require('../../assets/logo.png')}
+                                        defaultSource={require('../../assets/logo.png')}
+                                        source={{ uri: this.state.panUrl }}
                                     />
                                 </View>
-                                <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                                    <TouchableOpacity>
-                                        <Image
-                                            resizeMode={'contain'}
-                                            style={styles.addRemove}
-                                            source={require('../../assets/attach.png')}
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <Image
-                                            resizeMode={'contain'}
-                                            style={[styles.addRemove, { marginLeft: 10 }]}
-                                            source={require('../../assets/delete.png')}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
+                                {isEditTrue &&
+                                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                                        <TouchableOpacity onPress={() => this.showActionSheet('fromPAN')} >
+                                            <Image
+                                                resizeMode={'contain'}
+                                                style={styles.addRemove}
+                                                source={require('../../assets/attach.png')}
+                                            />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => this.clearImage('fromPAN')}>
+                                            <Image
+                                                resizeMode={'contain'}
+                                                style={[styles.addRemove, { marginLeft: 10 }]}
+                                                source={require('../../assets/delete.png')}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>}
                             </View>
                         </View>
 
 
                         <View style={styles.buttons}>
-                            <Button style={styles.saveButton} warning><Text style={{ fontSize: 16, fontWeight: '600', color: color.white }}>SAVE CHANGES</Text></Button>
-                            <Button style={styles.cancelButton}><Text style={{ fontSize: 16, fontWeight: '600', color: color.white }}>CANCEL</Text></Button>
+                            <Button
+                                onPress={() => this.setButton()}
+                                style={styles.saveButton} warning><Text style={{ fontSize: 16, fontWeight: '600', color: color.white }}>{isEditTrue ? 'SAVE CHANGES' : 'EDIT PROFILE'}</Text></Button>
+                            <Button
+                                onPress={() => this.setBackButton()}
+                                style={styles.cancelButton}><Text style={{ fontSize: 16, fontWeight: '600', color: color.white }}>{isEditTrue ? 'CANCEL' : 'BACK'}</Text></Button>
 
                         </View>
                     </Form>
@@ -569,7 +672,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: color.brandColor,
-        marginTop: 25
+        marginTop: Platform.OS === 'ios' ? 25 : 0
     },
     title: {
         fontSize: 20,
@@ -631,8 +734,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     documentImage: {
-        width: hp(19),
-        height: hp(14),
+        width: hp(20),
+        height: hp(15),
     },
     buttons: {
         alignSelf: 'center', flexDirection: 'row',

@@ -41,10 +41,13 @@ export default class _CustomHeader extends Component {
           </View>
 
           <View style={styles.right}>
-            <Image
-              source={require('../../../assets/notify.png')}
-              style={{ height: hp(3.6), width: hp(3.6) }}
-            />
+            <TouchableOpacity>
+              <Image
+                source={require('../../../assets/notify.png')}
+                style={{ height: hp(3.6), width: hp(3.6) }}
+              />
+            </TouchableOpacity>
+
           </View>
 
         </View>
@@ -70,13 +73,13 @@ const styles = StyleSheet.create({
     width: wp(65), alignItems: 'center', justifyContent: 'center'
   },
   title: {
-    textAlign: 'center', fontSize: hp(2.5), fontWeight: '600', letterSpacing: 1, color: color.white
+    textAlign: 'center', fontSize: hp(2.8), fontWeight: '600', letterSpacing: 1, color: color.white
   },
   right: {
     flex: 1, width: wp(10), alignItems: 'flex-end', justifyContent: 'center'
   },
   subtitle: {
-    marginBottom: 5,
+    marginVertical: 5,
     textAlign: 'center', fontSize: hp(2.2), fontWeight: '600', letterSpacing: 1, color: color.white
   }
 })

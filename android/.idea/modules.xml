@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Vyapaar.iml" filepath="$PROJECT_DIR$/.idea/modules/Vyapaar.iml" group="Vyapaar" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="Vyapaar/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-143199772/react-native-community_masked-view.iml" filepath="$PROJECT_DIR$/.idea/modules/-143199772/react-native-community_masked-view.iml" group="Vyapaar/react-native-community_masked-view" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-975606925/react-native-gesture-handler.iml" filepath="$PROJECT_DIR$/.idea/modules/-975606925/react-native-gesture-handler.iml" group="Vyapaar/react-native-gesture-handler" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/660007782/react-native-image-crop-picker.iml" filepath="$PROJECT_DIR$/.idea/modules/660007782/react-native-image-crop-picker.iml" group="Vyapaar/react-native-image-crop-picker" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-618883383/react-native-reanimated.iml" filepath="$PROJECT_DIR$/.idea/modules/-618883383/react-native-reanimated.iml" group="Vyapaar/react-native-reanimated" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-604015844/react-native-safe-area-context.iml" filepath="$PROJECT_DIR$/.idea/modules/-604015844/react-native-safe-area-context.iml" group="Vyapaar/react-native-safe-area-context" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/415155764/react-native-screens.iml" filepath="$PROJECT_DIR$/.idea/modules/415155764/react-native-screens.iml" group="Vyapaar/react-native-screens" />
+    </modules>
+  </component>
+</project>

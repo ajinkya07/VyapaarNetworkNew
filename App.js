@@ -16,14 +16,26 @@ import {
   StatusBar,
 } from 'react-native';
 import HamburgerNavigation from '@navigation/HamburgerNavigation'
+import { Root } from "native-base";
 
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+
+  componentDidMount = async () => {
+    console.disableYellowBox = true;
+
+  }
   render() {
     return (
       <>
         <StatusBar backgroundColor="blue" barStyle={'dark-content'} />
-        <HamburgerNavigation />
+        <Root>
+          <HamburgerNavigation />
+        </Root>
       </>
 
     );
